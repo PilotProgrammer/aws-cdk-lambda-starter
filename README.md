@@ -123,3 +123,26 @@ Now for the cool part. The codebuild_build.sh file, that we downloaded earlier t
 * "-a" is where on local to place code artifacts after they're build.
 * "-s" is the source directory where the CDK app is (which also contains the lambda directory and the buildspec file)
 * "-b" is the magic that let's us specify the buildspec file to use when the CodeBuild docker runs
+
+```bash
+lambda_directory="/Users/garrettgranacher/Desktop/working/aws-polly-client"
+./codebuild_build.sh -c -i aws/codebuild/standard:2.0 -a /Users/garrettgranacher/Desktop/working/codebuild/artifacts -s $lambda_directory -b $lambda_directory/buildspec_pollyclient.yml
+```
+
+Now we have the ability to locally run the lambda CodeBuild with the same buildspec file that's being used in the CodePipeline with AWS!
+
+A final thing to note regarding CDK is that when deploying locally, we get the prompt stating "This deployment will make potentially sensitive changes according to your current security approval level. <<list of changes>>. Do you wish to deploy these changes (y/n)?", in part because the stack is are changing permissions. To prevent the app from asking this every time I deployed, this can be added to the cdk.json file in the root directory:
+```json
+  {
+  ...
+    "requireApproval": "never"
+  }
+  ```
+  
+## TypeScript for the Lambda Language
+  
+The final change I made to the "CodePipeline Example" article is to setup TypeScript. I'm not going into any more detail in my article, but [this article](https://khalilstemmler.com/blogs/typescript/node-starter-project/) provided a great walk-through of adding the required dependencies and adding a tsconfig.json file to get TypeScript building.
+
+## Conclusion
+
+It might seem like my article stitched together a few orthogonal topics. However at the end of the day, I wanted a NodeJS Lambda that was backed with TypeScript, deployed from a CodePipeline automatically when I checked in code, and had the functionality of allowing me to run CodeBuild on my local before hashing through build errors while charging time in the cloud. All have been accomplished.
