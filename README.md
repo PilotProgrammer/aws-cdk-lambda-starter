@@ -125,8 +125,8 @@ Now for the cool part. The codebuild_build.sh file, that we downloaded earlier t
 * "-b" is the magic that let's us specify the buildspec file to use when the CodeBuild docker runs
 
 ```bash
-lambda_directory="/Users/garrettgranacher/Desktop/working/aws-polly-client"
-./codebuild_build.sh -c -i aws/codebuild/standard:2.0 -a /Users/garrettgranacher/Desktop/working/codebuild/artifacts -s $lambda_directory -b $lambda_directory/buildspec_pollyclient.yml
+lambda_directory="<<add-local-path-where-this-git-repo-is-located"
+./codebuild_build.sh -c -i aws/codebuild/standard:2.0 -a ~/artifacts -s $lambda_directory -b $lambda_directory/buildspec_pollyclient.yml
 ```
 
 Now we have the ability to locally run the Lambda CodeBuild with the same buildspec file that's being used in the CodePipeline with AWS!
