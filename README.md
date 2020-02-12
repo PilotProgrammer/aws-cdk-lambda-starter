@@ -102,3 +102,24 @@ artifacts:
   - dist/index.js
   - node_modules/**/*
 ```
+
+Then, we need to update the lib/pipeline-stack.ts file to use the buildspec file we just created, so change the "const lambdaBuild" in the lib/pipeline-stack.ts file to pull the buildspec_pollyclient.yml file content, and then use it as the "buildSpec" value:
+
+```typescript
+const lambdaCodeBuildBuildSpec = codebuild.BuildSpec.fromSourceFilename('./buildspec_pollyclient.yml')
+const lambdaBuild = new codebuild.PipelineProject(this, 'LambdaBuild', {
+  buildSpec: lambdaCodeBuildBuildSpec,
+  environment: {
+    buildImage: codebuild.LinuxBuildImage.UBUNTU_14_04_NODEJS_10_14_1,
+  },
+});
+```
+
+If we run "cdk deploy PipelineDeployingLambdaStack", the PipelineDeployingLambdaStack will reference the newly created buildspec file for the Lambda CodeBuild.
+
+Now for the cool part. The codebuild_build.sh file, that we downloaded earlier to run CodeBuild locally, lets us specify a custom buildspec file as a command line argument. In the following command:
+* "-c" means use AWS credentials from local machine
+* "-i" specifies the build docker image
+* "-a" is where on local to place code artifacts after they're build.
+* "-s" is the source directory where the CDK app is (which also contains the lambda directory and the buildspec file)
+* "-b" is the magic that let's us specify the buildspec file to use when the CodeBuild docker runs
