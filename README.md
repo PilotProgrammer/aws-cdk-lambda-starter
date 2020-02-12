@@ -9,7 +9,7 @@ In this article, we create a starter AWS CDK project which deploys a CodePipelin
 
 After starting a new endeavor mid last year working with AWS for the first time, one of the first projects that I took on was to create CloudWatch alarms and dashboards for the various AWS resources that our system was going to use. We were just going live for the first time, so it was critical to have the appropriate alarms in place to notify us if something was going wrong.
 
-The system's existing resources were defined in CloudFormation templates, however, after some research, CDK (Cloud Development Kit) from AWS was the clear way to go forward. The AWS SDK and CDK make a good combination, especially if there's information you need on existing resources in order to create new resources -- you can use the SDK to first query what's there and then use it in the CDK to build more -- perfect for my use case.
+The system's existing resources were defined in CloudFormation templates, however, after some research, CDK (Cloud Development Kit) from AWS was the clear way to go forward. The AWS SDK and CDK make a good combination, especially if there's information you need on existing resources in order to create new resources -- you can use the SDK to first interrogate existing resources and then use the procured information in the CDK to build out more -- perfect for my use case.
 
 I want to use the CDK for some future personal projects, so the idea of this post is to get a basic CDK app working that automatically updates resources when commits are made to a source repository.
 
@@ -25,7 +25,7 @@ The CDK app "bootstraps" with the first PipelineDeployingLambdaStack. We have to
 
 After that PipelineDeployingLambdaStack deploys, it creates a CodePipeline, which is triggered anytime new commits are made to the source repository. 
 
-The CodePipeline contains two CodeBuild projects: the first CodeBuild project builds the code that is in the "polly-client-lambda" directory, and the second creates a CF template via CDK, called "StackForLambdaDeployment" (I renamed it in my code"), which ultimately creates the Lambda from the previous CodeBuild. Once the CodePipeline finished, the output of the two CodeBuild projects are used together to actually deploy the "StackForLambdaDeployment".
+The CodePipeline contains two CodeBuild projects: the first CodeBuild project builds the code that is in the "polly-client-lambda" directory, and the second creates a CF template via CDK, called "StackForLambdaDeployment" (I renamed it in my code"), which ultimately creates the Lambda from the previous CodeBuild. Once the CodePipeline finishes, the output of the two CodeBuild projects are used together to actually deploy the "StackForLambdaDeployment".
 
 ## Running Local CodeBuild "Hello World" Example
 
