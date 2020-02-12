@@ -46,5 +46,59 @@ to this...
 ```bash
 && apt-get install -y openjdk-${JAVA_VERSION}-jdk \
 ```
+## Running Local CodeBuild on CodePipeline Example App 
 
+Now after getting the "hello world" local CodeBuild working, it's time to apply the same tactic to the "CodeBuild Example" CDK app we already have.
 
+In the "CodeBuild Example" article, the buildspec for the lambda CodeBuild is defined directly within the TypeScript, as follows (this is in the lib/pipeline-stack.ts file):
+
+```typescript
+const lambdaBuild = new codebuild.PipelineProject(this, 'LambdaBuild', {
+  buildSpec: codebuild.BuildSpec.fromObject({
+    version: '0.2',
+    phases: {
+      install: {
+        commands: [
+          'cd lambda',
+          'npm install',
+        ],
+      },
+      build: {
+        commands: 'npm run build',
+      },
+    },
+    artifacts: {
+      'base-directory': 'lambda',
+      files: [
+        'index.js',
+        'node_modules/**/*',
+      ],
+    },
+  }),
+  environment: {
+    buildImage: codebuild.LinuxBuildImage.UBUNTU_14_04_NODEJS_10_14_1,
+  },
+});
+```
+
+However, we actually want to extract that code into a file, which we can then utilize to locally run the CodeBuild. So first we create a buildspec file (I called it buildspec_pollyclient.yml in the repo) in the root repository directory, with the following contents. Note that to get the local CodeBuild working, a [runtime must be supplied](https://github.com/aws-samples/aws-serverless-workshops/issues/231) in the buildspec:
+```yml
+version: '0.2'
+phases:
+  install:
+    commands:
+    - cd polly-client-lambda
+    - npm install
+    runtime-versions:
+      docker: 18
+  build:
+    commands:
+    - echo "Testing... building polly-client-lambda"
+    - npm run build
+artifacts:
+  base-directory: polly-client-lambda
+  files:
+  - src/index.ts
+  - dist/index.js
+  - node_modules/**/*
+```
