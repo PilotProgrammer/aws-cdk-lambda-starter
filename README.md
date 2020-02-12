@@ -1,9 +1,9 @@
 # AWS CDK Starter Project
-CDK Starter application to deploy lambda via CodePipeline (with local CodeBuild and Typescript icing)
+CDK Starter application to deploy Lambda via CodePipeline (with local CodeBuild and Typescript icing)
 
 ## Intro
 
-In this article, we create a starter AWS CDK project which deploys a CodePipeline for creating a NodeJS lambda. This article is based on another [article from AWS](https://docs.aws.amazon.com/cdk/latest/guide/codepipeline_example.html), but tweaks a number of things and builds on it, specifically including local CodeBuild functionality, as well as changing the Lambda language to TypeScript.
+In this article, we create a starter AWS CDK project which deploys a CodePipeline for creating a NodeJS Lambda. This article is based on another [article from AWS](https://docs.aws.amazon.com/cdk/latest/guide/codepipeline_example.html), but tweaks a number of things and builds on it, specifically including local CodeBuild functionality, as well as changing the Lambda language to TypeScript.
 
 ## Background
 
@@ -17,15 +17,15 @@ I want to use the CDK for some future personal projects, so the idea of this pos
 
 The [setup docs](https://docs.aws.amazon.com/cdk/latest/guide/getting_started.html) for CDK are easy to follow to install the CLI tools, setup your AWS credentials, and run "cdk init" to create a skeleton project in the language of your choice. Today we're using TypeScript.
 
-A large portion of the code for my starter project is procured from this AWS CDK "CodePipeline Example" article (mentioned in intro). The AWS article includes basically just code snippets, instead of a fully functioning, downloadable repository. I've done that second part, which is the content of this repository on GitHub. The code in this aws-cdk-lambda-starter repo must be  deployed to AWS CodeCommit (or you can [integrate GitHub instead](https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-webhooks-migration.html)).
+A large portion of the code for my starter project is procured from [this AWS CDK "CodePipeline Example" article](https://docs.aws.amazon.com/cdk/latest/guide/codepipeline_example.html) (mentioned in intro). The AWS article includes basically just code snippets, instead of a fully functioning, downloadable repository. I've done that second part, which is the content of this repository on GitHub. The code in this aws-cdk-lambda-starter repo must be deployed to AWS CodeCommit (or you can [integrate GitHub instead](https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-webhooks-migration.html)).
 
-I liked starting with this example because, once the CDK app is deployed, the lambda code will be deployed automatically via CodePipeline after any commits are made to the source repository. Basically, we have a CDK app and a NodeJS app (for the lambda, in a subfolder) in one repository. There are two CloudFormation stacks that are defined.
+I liked starting with this example because, once the CDK app is deployed, the Lambda code will be deployed automatically via CodePipeline after any commits are made to the source repository. Basically, we have a CDK app and a NodeJS app (for the Lambda, in a subfolder) in one repository. There are two CloudFormation stacks that are defined.
 
 The CDK app "bootstraps" with the first PipelineDeployingLambdaStack. We have to run "cdk deploy" on local machine to deploy this into the AWS account.
 
 After that PipelineDeployingLambdaStack deploys, it creates a CodePipeline, which is triggered anytime new commits are made to the source repository. 
 
-The CodePipeline contains two CodeBuild projects: the first CodeBuild project builds the code that is in the "polly-client-lambda" directory, and the second creates a CF template via CDK, called "StackForLambdaDeployment" (I renamed it in my code"), which ultimately creates the lambda from the previous CodeBuild. Once the CodePipeline finished, the output of the two CodeBuild projects are used together to actually deploy the "StackForLambdaDeployment".
+The CodePipeline contains two CodeBuild projects: the first CodeBuild project builds the code that is in the "polly-client-lambda" directory, and the second creates a CF template via CDK, called "StackForLambdaDeployment" (I renamed it in my code"), which ultimately creates the Lambda from the previous CodeBuild. Once the CodePipeline finished, the output of the two CodeBuild projects are used together to actually deploy the "StackForLambdaDeployment".
 
 ## Running Local CodeBuild "Hello World" Example
 
@@ -50,7 +50,7 @@ to this...
 
 Now after getting the "hello world" local CodeBuild working, it's time to apply the same tactic to the "CodeBuild Example" CDK app we already have.
 
-In the "CodeBuild Example" article, the buildspec for the lambda CodeBuild is defined directly within the TypeScript, as follows (this is in the lib/pipeline-stack.ts file):
+In the "CodeBuild Example" article, the buildspec for the Lambda CodeBuild is defined directly within the TypeScript, as follows (this is in the lib/pipeline-stack.ts file):
 
 ```typescript
 const lambdaBuild = new codebuild.PipelineProject(this, 'LambdaBuild', {
@@ -121,7 +121,7 @@ Now for the cool part. The codebuild_build.sh file, that we downloaded earlier t
 * "-c" means use AWS credentials from local machine
 * "-i" specifies the build docker image
 * "-a" is where on local to place code artifacts after they're build.
-* "-s" is the source directory where the CDK app is (which also contains the lambda directory and the buildspec file)
+* "-s" is the source directory where the CDK app is (which also contains the Lambda directory and the buildspec file)
 * "-b" is the magic that let's us specify the buildspec file to use when the CodeBuild docker runs
 
 ```bash
@@ -129,7 +129,7 @@ lambda_directory="/Users/garrettgranacher/Desktop/working/aws-polly-client"
 ./codebuild_build.sh -c -i aws/codebuild/standard:2.0 -a /Users/garrettgranacher/Desktop/working/codebuild/artifacts -s $lambda_directory -b $lambda_directory/buildspec_pollyclient.yml
 ```
 
-Now we have the ability to locally run the lambda CodeBuild with the same buildspec file that's being used in the CodePipeline with AWS!
+Now we have the ability to locally run the Lambda CodeBuild with the same buildspec file that's being used in the CodePipeline with AWS!
 
 A final thing to note regarding CDK is that when deploying locally, we get the prompt stating "This deployment will make potentially sensitive changes according to your current security approval level. <<list of changes>>. Do you wish to deploy these changes (y/n)?", in part because the stack is are changing permissions. To prevent the app from asking this every time I deployed, this can be added to the cdk.json file in the root directory:
 ```json
