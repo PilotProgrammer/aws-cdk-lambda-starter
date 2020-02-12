@@ -1,0 +1,21 @@
+{
+  "name": "polly-client-lambda",
+  "version": "1.0.0",
+  "description": "An AWS Lambda function to parse a pdf and synthesize to text using AWS Polly service.",
+  "scripts": {
+    "start": "tsc && node dist/run-handler.js",
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^13.1.8",
+    "aws-lambda": "^1.0.5",
+    "aws-sdk": "^2.603.0",
+    "ts-node": "^8.6.2"
+  },
+  "dependencies": {
+    "typescript": "^3.7.5"
+  }
+}
