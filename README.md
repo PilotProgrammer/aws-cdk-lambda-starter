@@ -131,7 +131,7 @@ lambda_directory="<<add-local-path-where-this-git-repo-is-located"
 
 Now we have the ability to locally run the Lambda CodeBuild with the same buildspec file that's being used in the CodePipeline with AWS!
 
-A final thing to note regarding CDK is that when deploying locally, we get the prompt stating "This deployment will make potentially sensitive changes according to your current security approval level. <<list of changes>>. Do you wish to deploy these changes (y/n)?", in part because the stack is are changing permissions. To prevent the app from asking this every time I deployed, this can be added to the cdk.json file in the root directory:
+A final thing to note regarding CDK is that when deploying locally, we get the prompt stating "This deployment will make potentially sensitive changes according to your current security approval level... Do you wish to deploy these changes (y/n)?", in part because the stack is changing permissions. To prevent the app from asking this every time I deployed, this can be added to the cdk.json file in the root directory:
 ```json
   {
   ...
